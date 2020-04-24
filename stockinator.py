@@ -54,18 +54,26 @@ def sort_list_of_tuples(l, reverse=True):
 
 if __name__ == '__main__':
     tickers = ['SPY', 'VOX', 'VCR', 'VDC', 'VDE', 'VFH', 'VHT', 'VIS', 'VGT', 'VAW', 'VNQ', 'VPU']
-    days_back = [233, 144, 89, 55, 34, 21]
+    data_set_intervals = [
+        [233, 89, 34],
+        [233, 144, 89, 55, 34],
+        [233, 144, 89, 55, 34, 21],
+        [144, 89, 55, 34, 21, 13, 8, 5]
+    ]
+    
     data = get_stock_data(tickers, period='2y', interval='1d')
     
-    raw_perf_data = get_performance(data, periods=days_back)
-    weighed_perf_data = get_weighted_performance(raw_perf_data, weight=days_back[-1])
-    new_stocks = get_new_investments(weighed_perf_data)
-
     print("Sector strength according to STOCKINATOR")
     print(f"Date of report: {datetime.datetime.now()}")
-    print(f"Intervals and weighting used: {days_back}")
 
-    for stock in sort_list_of_tuples(new_stocks):
-        print(stock[0], stock[1])
+    for days_back in data_set_intervals:
+        print()
+        print(f"Intervals and weighting used: {days_back}")
+        raw_perf_data = get_performance(data, periods=days_back)
+        weighed_perf_data = get_weighted_performance(raw_perf_data, weight=days_back[-1])
+        new_stocks = get_new_investments(weighed_perf_data)
+
+        for stock in sort_list_of_tuples(new_stocks):
+            print(stock[0], stock[1])
 
 
