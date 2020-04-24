@@ -17,7 +17,7 @@ def get_stock_data(tickers, start=None, end=None, interval='1d', period=None):
         threads=True
     )
 
-def get_performance(data, periods=[360], stat='Close'):
+def get_performance(data, periods=[360], stat='Close', offset=0):
     perf_data = {}
     for period in periods:
         for t, d in data.iteritems():
