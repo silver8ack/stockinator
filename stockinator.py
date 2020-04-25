@@ -65,7 +65,11 @@ def sort_list_of_tuples(l, reverse=True):
 
 
 if __name__ == '__main__':
-    tickers = ['SPY', 'DIS', 'AMZN', 'VOX', 'VCR', 'VDC', 'VDE', 'VFH', 'VHT', 'VIS', 'VGT', 'VAW', 'VNQ', 'VPU']
+    tickers = [
+        'SPY', 'AAPL', 'AMZN', 'MSFT', 'FB', 'GOOG', 'NFLX',
+        'VOX', 'VCR', 'VDC', 'VDE', 'VFH', 'VHT', 'VIS', 'VGT', 'VAW', 'VNQ', 'VPU'
+    ]
+
     data_set_intervals = [
         [144, 89, 34],
         [144, 89, 34, 13],
