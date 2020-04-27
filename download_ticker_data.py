@@ -18,8 +18,6 @@ if __name__ == '__main__':
     tickers = [
         'SPY', 'VOX', 'VCR', 'VDC', 'VDE', 'VFH', 
         'VHT', 'VIS', 'VGT', 'VAW', 'VNQ', 'VPU',
-        'XBI', 'IHI', 'XLB', 'IGV', 'SKYY', 'ITA',
-        'SMH', 'ROBO', 'IAU'
     ]
 
     data = get_stock_data(tickers, period='10y', interval='1d')

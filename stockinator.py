@@ -45,11 +45,13 @@ def get_period_performance(data, periods=[360], offset=0, weight=1):
         for ticker in tickers:
             _first = chunk[ticker]['Open'].iloc[0]
             _last = chunk[ticker]['Close'].iloc[-1]
-            pct_performance = ((_last - _first) / _last) * 100
+            
+            pct_performance = ((_last - _first) / _first) * 100
             df.at[ticker, period] = pct_performance
 
             df.at[ticker, f"{period}_Weighted"] = pct_performance * (weight / period)
             #df.at[ticker, f"{period}_Weighted"] = pct_performance * (period / weight)
+            #df.at[ticker, f"{period}_Weighted"] = pct_performance * (i + 1)
 
             #check if offset is used and we're at the last data period
             if offset > 0 and i == len(periods)-1:
@@ -57,10 +59,13 @@ def get_period_performance(data, periods=[360], offset=0, weight=1):
                 _next_first = next_chunk[ticker]['Open'].iloc[0]
                 _next_last = next_chunk[ticker]['Close'].iloc[-1] 
                 next_pct_performance = ((_next_last - _next_first) / _next_first) * 100
-                df.at[ticker, f"Next_{offset}"] = np.around(next_pct_performance, decimals=3)
+                df.at[ticker, f"Next_{offset}"] = np.around(next_pct_performance, decimals=4)
 
+    period_columns = df.filter(regex='^[0-9]*$')
+    df['TotalPerformance'] = np.around(period_columns.sum(axis=1), decimals=4)
+    
     period_weights = df.filter(regex='_Weighted')
-    df['TotalWeight'] = np.around(period_weights.sum(axis=1), decimals=3)
+    df['TotalWeight'] = np.around(period_weights.sum(axis=1), decimals=4)
         
     return df
 
