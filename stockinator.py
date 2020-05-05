@@ -18,7 +18,7 @@ def get_stock_data(tickers, start=None, end=None, interval='1d', period=None):
         interval=interval,
         group_by="ticker",
         auto_adjust=True,
-        threads=True
+        threads=False
     )
 
 def unique_list(l):
