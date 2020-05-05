@@ -1,8 +1,31 @@
-import pandas as pd
-import numpy as np
-import stockinator as st
+import yfinance as yf
+import requests
+import csv
 
-offset = 0
+urls = {
+    'nasdaq': 'https://old.nasdaq.com/screening/companies-by-name.aspx?letter=0&exchange=nasdaq&render=download',
+    'nyse': 'https://old.nasdaq.com/screening/companies-by-name.aspx?letter=0&exchange=nyse&render=download',
+}
+
+line_list = []
+for exchange, url in urls.items():
+    resp = requests.get(url)
+    lines = resp.text.split(',\r\n')
+
+    for l in lines:
+        split_line = l.split('","')
+        trimmed_line = []
+        for t in split_line:
+            trimmed_line.append(t.replace('"', ''))
+        line_list.append(trimmed_line)
+
+columns = line_list.pop(0)
+
+
+
+
+
+df = pd.DataFrame(line_list, columns=columns)
 
 df = pd.read_pickle('stocks/all_1d.pkl')
 df_year = df.iloc[-252:]
