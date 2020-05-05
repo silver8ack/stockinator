@@ -38,12 +38,18 @@ def get_period_performance(data, periods=[360], offset=0, weight=1):
 
     for i, period in enumerate(periods):
         if offset > 0:
-            chunk = data.iloc[-(period + offset):-offset]
+            if i == len(periods)-1: 
+                chunk = data.iloc[-((period + offset) + 1):-offset]
+            else:
+                chunk = data.iloc[-((period + offset) + 1):-(offset + periods[i+1])]
         else:
-            chunk = data.iloc[-period:]
+            if i == len(periods)-1: 
+                chunk = data.iloc[-(period + 1):]
+            else:
+                chunk = data.iloc[-(period + 1):-periods[i+1]]
 
         for ticker in tickers:
-            _first = chunk[ticker]['Open'].iloc[0]
+            _first = chunk[ticker]['Close'].iloc[0]
             _last = chunk[ticker]['Close'].iloc[-1]
             
             pct_performance = ((_last - _first) / _first) * 100
@@ -56,7 +62,7 @@ def get_period_performance(data, periods=[360], offset=0, weight=1):
             #check if offset is used and we're at the last data period
             if offset > 0 and i == len(periods)-1:
                 next_chunk = data.iloc[-(offset):]
-                _next_first = next_chunk[ticker]['Open'].iloc[0]
+                _next_first = next_chunk[ticker]['Close'].iloc[0]
                 _next_last = next_chunk[ticker]['Close'].iloc[-1] 
                 next_pct_performance = ((_next_last - _next_first) / _next_first) * 100
                 df.at[ticker, f"Next_{offset}"] = np.around(next_pct_performance, decimals=4)
