@@ -63,6 +63,3 @@ df_buy.to_pickle('stocks/buy.pkl')
 #print("Low Performaing Stocks")
 #print(df_sell.sort_values('PctHigh', ascending=True))
 df_sell.to_pickle('stocks/sell.pkl')
-
-for d in df_highs.sort_values('PctHigh', ascending=False).iterrows():
-    ...:     print(d[0])
