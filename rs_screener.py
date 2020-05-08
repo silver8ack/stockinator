@@ -54,7 +54,7 @@ if __name__ == '__main__':
         '150 SMA', '200 SMA', '52 Week Low', '52 Week High'])
 
     n = -1
-    for stock in stocklist[:100]:
+    for stock in stocklist:
         n += 1
         sys.stdout.write("Index {} of {} Stock [{}] \r".format(n, total_stocks, stock))
         sys.stdout.flush()
@@ -116,4 +116,5 @@ if __name__ == '__main__':
         except Exception as e:
             print(e)
 
-    print(exportList.sort_values('RS_Rating', ascending=True))
+    print(exportList.sort_values('RS_Rating', ascending=False))
+    exportList.sort_values('RS_Rating', ascending=False).to_csv('stocks.csv', index=False)
