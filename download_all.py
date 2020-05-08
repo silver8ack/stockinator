@@ -21,5 +21,5 @@ if __name__ == '__main__':
 
     periods = ['1d']
     for p in periods:
-        data = st.get_stock_data(tickers + ['SPX', 'VIX'], period='2y', interval=p)
+        data = st.get_stock_data(tickers, period='1y', interval=p)
         data.to_pickle(f"stocks/all_{p}.pkl")

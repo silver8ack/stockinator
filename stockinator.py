@@ -17,13 +17,14 @@ def get_stock_data(tickers, start=None, end=None, interval='1d', period=None):
         period=period,
         interval=interval,
         group_by="ticker",
-        auto_adjust=True,
+        auto_adjust=False,
         threads=False
     )
 
 def unique_list(l):
     list_set = set(l) 
-    return list(list_set)
+    return list(OrderedDict.fromkeys(l))
+    #return list(list_set)
 
 def get_sp_companies():
     data = pd.read_csv('stocks/sp500.csv')
