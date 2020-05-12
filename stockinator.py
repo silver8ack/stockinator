@@ -1,3 +1,8 @@
+import talib as ta
+import matplotlib.pyplot as plt
+import requests
+import time
+import sys
 import yfinance as yf
 import pandas as pd
 import numpy as np
@@ -25,6 +30,44 @@ def unique_list(l):
     list_set = set(l) 
     return list(OrderedDict.fromkeys(l))
     #return list(list_set)
+
+def reset_index(df):
+    df = df.reset_index()
+    df['Date'] = pd.to_datetime(df.Date)
+    
+    data = df.sort_values(by="Date", ascending=True).set_index("Date")#.last("59D")
+    df = df.set_index('Date')
+
+    return df, data
+
+def calculate_rsi(df, periods=14):
+    df, data = reset_index(df)
+    df['RSI'] = ta.RSI(df.Close.values, periods)
+    
+    return df
+
+def calculate_ema(df, periods=[50, 150, 200]):
+    df, data = reset_index(df)
+    for i, x in enumerate(periods):
+        df[f"EMA_{i+1}"] = ta.EMA(df.Close.values, timeperiod=x)
+        
+    return df
+
+def calculate_volume(df, periods=[90, 10]):
+    df, data = reset_index(df)
+
+    df['OBV'] = ta.OBV(df.Close, df.Volume)
+    df['OBV MA'] = ta.EMA(df.OBV.values, timeperiod=21)
+    for x in periods:
+        df[f"{x} Avg Volume"] = round(df.Volume.rolling(window=x).mean(), 2)
+        
+    return df
+
+def calculate_mfi(df, period=14):
+    df, data = reset_index(df)
+    df['MFI'] = ta.MFI(df['High'], df['Low'], df['Close'], df['Volume'], timeperiod=period)
+    
+    return df
 
 def get_sp_companies():
     data = pd.read_csv('stocks/sp500.csv')
