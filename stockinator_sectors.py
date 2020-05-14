@@ -70,17 +70,12 @@ if __name__ == '__main__':
     tickers = ['SPY', 'VOX', 'VCR', 'VDC', 'VDE', 'VFH', 'VHT', 'VIS', 'VGT', 'VAW', 'VNQ', 'VPU']
 
     data_set_intervals = [
-        #[144, 89, 34],
-        #[144, 34, 8],
-        #[34, 21, 13, 8, 5],
-        #[89, 34, 13, 5],
-        #[144, 55, 21, 8],
-        #[89, 21, 5],
-        [8, 5, 3, 2]
+        [144, 55, 21],
+        [55, 21, 8],
     ]
 
-    sp500 = get_sp_companies()
-    #data = get_stock_data(tickers, period='2y', interval='1d')
+    #sp500 = get_sp_companies()
+    data = get_stock_data(tickers, period='2y', interval='1d')
     
     #data = None
     #data_file = 'sp500_data.pkl'
@@ -89,7 +84,7 @@ if __name__ == '__main__':
     #else:
     #    data = get_stock_data(list(sp500['Symbol'].values) + ['SPY'], period='2y', interval='1d')
     #    data.to_pickle(data_file)
-    data = get_stock_data(tickers, period='2y', interval='1wk')
+    data = get_stock_data(tickers, period='2y', interval='1d')
     print("Sector strength according to STOCKINATOR")
     print(f"Date of report: {datetime.datetime.now()}")
 
@@ -97,10 +92,10 @@ if __name__ == '__main__':
         print()
         print(f"Intervals and weighting used: {days_back}")
         
-        offset = 0
-        #offset = days_back[-1]
+        #offset = 0
+        offset = days_back[-1]
         #offset = days_back[len(days_back)-2]
-        print(data.dropna())
+        #print(data.dropna())
         pf_data = get_period_performance(data.dropna(), data_set_intervals[-1], offset=offset, weight=days_back[-1])
         print(pf_data.sort_values('TotalWeight', ascending=False))  
 
