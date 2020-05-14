@@ -6,7 +6,7 @@ import stockinator as st
 
 if __name__ == '__main__':
     tickers = [
-        'SPY', 'VBR', 'VBK', 'VUG', 'VTV',
+        'SPY', 'VBR', 'VBK', 'VUG', 'VTV', 'TLT',
         'VOX', 'VCR', 'VDC', 'VDE', 'VFH', 'VHT', 'VIS', 'VGT', 'VAW', 'VNQ', 'VPU'
     ]
 
