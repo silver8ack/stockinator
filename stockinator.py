@@ -25,7 +25,7 @@ def get_stock_data(tickers, start=None, end=None, interval='1d', period=None):
         interval=interval,
         group_by="ticker",
         auto_adjust=False,
-        threads=False
+        threads=True
     )
 
 def unique_list(l):
@@ -52,6 +52,17 @@ def calculate_ema(df, periods=[50, 150, 200]):
     df, data = reset_index(df)
     for i, x in enumerate(periods):
         df[f"EMA_{i+1}"] = ta.EMA(df.Close.values, timeperiod=x)
+        
+    return df
+
+def calculate_ma(df, type='sma', periods=[50, 150, 200]):
+    if not type.lower() in ['ema', 'sma']:
+        return None
+    
+    func = getattr(ta, type.upper())
+    df, data = reset_index(df)
+    for i, x in enumerate(periods):
+        df[f"{type.upper()}_{x}"] = func(df.Close.values, timeperiod=x)
         
     return df
 
