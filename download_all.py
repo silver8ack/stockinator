@@ -55,12 +55,16 @@ def print_it(s):
     return s['Symbol']
 
 if __name__ == '__main__':
-    df = pd.read_pickle('stocks/all_1d.pkl')
-    symbols = [x[0] for x in df.columns.values]
-    stuff = [(s, df[s]) for s in symbols]
-    max_processes = (mp.cpu_count() * 2) - 1
-    pool = mp.Pool(processes=max_processes)
-    data = pool.map(ta_data, stuff)
+    data = st.get_stock_data(tickers, period='10y', interval=p)
+    data.to_pickle(f"stocks/all_{p}.pkl")
+
+    #df = pd.read_pickle('stocks/all_1d.pkl')
+    #symbols = [x[0] for x in df.columns.values]
+    #stuff = [(s, df[s]) for s in symbols]
+    #print(len(stuff))
+    #max_processes = (mp.cpu_count() * 2) - 1
+    #pool = mp.Pool(processes=max_processes)
+    #data = pool.map(ta_data, stuff)
     #data = []
     #for symbol in symbols:
     #    sys.stdout.write("Processing Stock: {}\r".format(symbol))
@@ -69,10 +73,10 @@ if __name__ == '__main__':
     #    d = ta_data(df[symbol])
     #    if not d is None:
     #        data.append((symbol, d))
-    pool.close()
-    print(data)
-    da_ta = pd.concat([x[1] for x in data], axis=1, keys=[x[0] for x in data])
-    da_ta.to_pickle('stocks/ta_data.pkl')
+    #pool.close()
+    #print(data)
+    #da_ta = pd.concat([x[1] for x in data], axis=1, keys=[x[0] for x in data])
+    #da_ta.to_pickle('stocks/ta_data.pkl')
     #print(len(data))
     
     #periods = ['1d']
