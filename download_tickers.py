@@ -52,6 +52,7 @@ if __name__ == '__main__':
     futures = []
     #max_processes = (mp.cpu_count() * 2) - 1
     max_processes = mp.cpu_count() * 2
+    print(f"Processing stocks with ThreadPool using {max_processes} workers.")
     with concurrent.futures.ThreadPoolExecutor(max_workers=max_processes) as exectutor:
         for ticker in list(df_tickers.index):
             future = exectutor.submit(historical, ticker)
@@ -77,7 +78,9 @@ if __name__ == '__main__':
         df['Sector'] = df_tickers.loc[ticker]['Sector']
         df['Industry'] = df_tickers.loc[ticker]['industry']
         df['Name'] = df_tickers.loc[ticker]['Name']
-        dfs.append((result[0], df))
+        dfs.append((ticker, df))
 
     panel = pd.concat([x[1] for x in dfs], axis=1, keys=[x[0] for x in dfs])
+
+    print("Writing data to disk...")
     panel.to_pickle('stocks/stock_data.pkl')
