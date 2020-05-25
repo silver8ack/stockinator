@@ -50,9 +50,10 @@ if __name__ == '__main__':
     df_tickers.to_pickle('stocks/stock_info.pkl')
 
     futures = []
-    max_processes = (mp.cpu_count() * 2) - 1
+    #max_processes = (mp.cpu_count() * 2) - 1
+    max_processes = mp.cpu_count() * 2
     with concurrent.futures.ThreadPoolExecutor(max_workers=max_processes) as exectutor:
-        for ticker in list(df_tickers.index)[:10]:
+        for ticker in list(df_tickers.index):
             future = exectutor.submit(historical, ticker)
             futures.append(future)
 
