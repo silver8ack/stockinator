@@ -15,6 +15,8 @@ import csv
 import os
 from collections import OrderedDict
 
+#df.loc[:, 'bb_high'], df.loc[:, 'bb_mid'], df.loc[:, 'bb_low'] = ta.BBANDS(df.loc[:, 'adjclose'], matype=ta.MA_Type.T3)
+
 # get stock data from yahoo finance
 def get_stock_data(tickers, start=None, end=None, interval='1d', period=None):
     return yf.download(
@@ -41,6 +43,28 @@ def reset_index(df):
     df = df.set_index('Date')
 
     return df, data
+
+def adx(df, periods=14):
+    df, data = reset_index(df)
+    df['ADX'] = ta.ADX(df['High'], df['Low'], df['Close'], timeperiod=periods)
+    return df
+
+def plus_di(df, periods=14):
+    df, data = reset_index(df)
+    df['DI+'] = ta.PLUS_DI(df['High'], df['Low'], df['Close'], timeperiod=periods)
+    return df
+
+def minus_di(df, periods=14):
+    df, data = reset_index(df)
+    df['DI-'] = ta.MINUS_DI(df['High'], df['Low'], df['Close'], timeperiod=periods)
+    return df
+
+def dmi(df, periods=14):
+    df, data = reset_index(df)
+    df = adx(df, periods)
+    df = plus_di(df, periods)
+    df = minus_di(df, periods)
+    return df
 
 def calculate_rsi(df, periods=14):
     df, data = reset_index(df)
