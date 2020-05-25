@@ -34,14 +34,30 @@ def get_stock_data():
     return ticker_data
 
 def historical(ticker):
+    try:
+        df = yf.Ticker(ticker).history(period='10y', interval='1d')
+        return df
+    except:
+        return None
+
+def process_data(ticker):
     sys.stdout.write(f"Processing Stock: [{ticker}] \r")
     sys.stdout.flush()
 
-    try:
-        df = yf.Ticker(ticker).history(period='10y', interval='1d')
-        return (ticker, df)
-    except:
-        return (None, None)
+    df = historical(ticker)
+    if df is None:
+        return None
+
+    df = df.dropna(how='all')
+    if df.empty:
+        return None
+
+    df = st.dmi(df)
+    df = st.calculate_ma(df, type='ema', periods=[20, 50, 100, 150, 200])
+    df = st.calculate_rsi(df)
+    df = st.calculate_mfi(df)
+
+    return df
 
 if __name__ == '__main__':
     tickers = get_stock_data()
@@ -49,36 +65,27 @@ if __name__ == '__main__':
     df_tickers = df_tickers.T
     df_tickers.to_pickle('stocks/stock_info.pkl')
 
-    futures = []
+    dfs = []
+    #futures = []
     #max_processes = (mp.cpu_count() * 2) - 1
     max_processes = mp.cpu_count() * 2
     print(f"Processing stocks with ThreadPool using {max_processes} workers.")
     with concurrent.futures.ThreadPoolExecutor(max_workers=max_processes) as exectutor:
-        for ticker in list(df_tickers.index):
-            future = exectutor.submit(historical, ticker)
-            futures.append(future)
+        #for ticker in list(df_tickers.index)[:100]:
+        #    future = exectutor.submit(historical, ticker)
+        #    futures.append(future)
+        future_data = {
+            exectutor.submit(
+                process_data, ticker): ticker for ticker in list(df_tickers.index)}
 
-    dfs = []
-    for future in concurrent.futures.as_completed(futures):
-        result = future.result()
-        ticker = result[0]
-        df = result[1]
+        for future in concurrent.futures.as_completed(future_data):
+            ticker = future_data[future]
+            df = future.result()
 
-        if df is None:
-            continue
+            if df is None:
+                continue
 
-        df = df.dropna(how='all')
-        if df.empty:
-            continue
-
-        df = st.dmi(df)
-        df = st.calculate_ma(df, type='ema', periods=[20, 50, 100, 150, 200])
-        df = st.calculate_rsi(df)
-        df = st.calculate_mfi(df)
-        df['Sector'] = df_tickers.loc[ticker]['Sector']
-        df['Industry'] = df_tickers.loc[ticker]['industry']
-        df['Name'] = df_tickers.loc[ticker]['Name']
-        dfs.append((ticker, df))
+            dfs.append((ticker, df))
 
     print("Concatenating data to one dataframe...")
     panel = pd.concat([x[1] for x in dfs], axis=1, keys=[x[0] for x in dfs])
