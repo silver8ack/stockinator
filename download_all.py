@@ -33,8 +33,12 @@ def get_stock_data():
 
     return ticker_data
 
-def ta_data(df):
-    df = df.dropna(how='all')
+def ta_data(stuff):
+    s = stuff[0]
+    sys.stdout.write("Processing Stock: [{}] \r".format(s))
+    sys.stdout.flush()
+
+    df = stuff[1].dropna(how='all')
     if df.empty:
         return
 
@@ -53,15 +57,20 @@ def print_it(s):
 if __name__ == '__main__':
     df = pd.read_pickle('stocks/all_1d.pkl')
     symbols = [x[0] for x in df.columns.values]
-    data = []
-    for symbol in symbols:
-        sys.stdout.write(f"Processing Stock: {symbol}\r")
-        sys.stdout.flush()
-        
-        df = ta_data(df)
-        if not df is None:
-            data.append((symbol, df))
+    stuff = [(s, df[s]) for s in symbols]
+    max_processes = (mp.cpu_count() * 2) - 1
+    pool = mp.Pool(processes=max_processes)
+    data = pool.map(ta_data, stuff)
+    #data = []
+    #for symbol in symbols:
+    #    sys.stdout.write("Processing Stock: {}\r".format(symbol))
+    #    sys.stdout.flush()
 
+    #    d = ta_data(df[symbol])
+    #    if not d is None:
+    #        data.append((symbol, d))
+    pool.close()
+    print(data)
     da_ta = pd.concat([x[1] for x in data], axis=1, keys=[x[0] for x in data])
     da_ta.to_pickle('stocks/ta_data.pkl')
     #print(len(data))
