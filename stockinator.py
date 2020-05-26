@@ -59,6 +59,16 @@ def minus_di(df, periods=14):
     df['DI-'] = ta.MINUS_DI(df['High'], df['Low'], df['Close'], timeperiod=periods)
     return df
 
+def aroon(df, periods=14):
+    df, data = reset_index(df)
+    df['AroonUp'], df['AroonDown'] = ta.AROON(df['High'], df['Low'], timeperiod=periods)
+    return df
+
+def atr(df, periods=14):
+    df, data = reset_index(df)
+    df['ATR'] = ta.ATR(df['High'], df['Low'], df['Close'], timeperiod=periods)
+    return df
+
 def dmi(df, periods=14):
     df, data = reset_index(df)
     df = adx(df, periods)
