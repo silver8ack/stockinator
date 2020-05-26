@@ -53,9 +53,9 @@ def process_data(ticker):
         return None
 
     df = st.dmi(df)
-    df = st.aroon(df)
     df = st.atr(df)
-    df = st.calculate_ma(df, type='ema', periods=[20, 50, 100, 150, 200])
+    df = st.calculate_ma(df, type='ema', periods=[21, 50, 100, 150, 200])
+    df = st.calculate_ma(df, type='sma', periods=[21, 50, 100, 150, 200])
     df = st.calculate_rsi(df)
     df = st.calculate_mfi(df)
 
