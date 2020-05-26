@@ -70,7 +70,7 @@ if __name__ == '__main__':
     dfs = []
     #futures = []
     #max_processes = (mp.cpu_count() * 2) - 1
-    max_processes = mp.cpu_count() * 32
+    max_processes = mp.cpu_count()
     print(f"Processing stocks with ThreadPool using {max_processes} workers.")
     with concurrent.futures.ThreadPoolExecutor(max_workers=max_processes) as exectutor:
         #for ticker in list(df_tickers.index)[:100]:
