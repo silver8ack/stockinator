@@ -78,7 +78,7 @@ def dmi(df, periods=14):
 
 def calculate_rsi(df, periods=14):
     df, data = reset_index(df)
-    df['RSI'] = ta.RSI(df.Close.values, periods)
+    df[f"RSI_{periods}"] = ta.RSI(df.Close.values, periods)
     
     return df
 

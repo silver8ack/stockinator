@@ -57,6 +57,7 @@ def process_data(ticker):
     df = st.calculate_ma(df, type='ema', periods=[21, 50, 100, 150, 200])
     df = st.calculate_ma(df, type='sma', periods=[21, 50, 100, 150, 200])
     df = st.calculate_rsi(df)
+    df = st.calculate_rsi(df, periods=2)
     df = st.calculate_mfi(df)
 
     return df
@@ -70,7 +71,7 @@ if __name__ == '__main__':
     dfs = []
     #futures = []
     #max_processes = (mp.cpu_count() * 2) - 1
-    max_processes = mp.cpu_count()
+    max_processes = mp.cpu_count() * 8
     print(f"Processing stocks with ThreadPool using {max_processes} workers.")
     with concurrent.futures.ThreadPoolExecutor(max_workers=max_processes) as exectutor:
         #for ticker in list(df_tickers.index)[:100]:
